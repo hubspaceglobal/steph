@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supply Chain Working Group</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep: #0d1c28; --bg-mid: #132333; --bg-card: #1a3045;
+      --teal: #2bbfbf; --teal-dim: rgba(43,191,191,0.15); --teal-border: rgba(43,191,191,0.35);
+      --coral: #e05a5a; --coral-dim: rgba(224,90,90,0.12); --coral-border: rgba(224,90,90,0.3);
+      --text-primary: #e8f0f5; --text-secondary: #8fafc4; --text-muted: #5a7a90;
+      --rule: rgba(43,191,191,0.2);
+      /* legacy aliases */
+      --brown: #e8f0f5;
+      --crimson: #e05a5a;
+      --crimson-mid: rgba(224,90,90,0.12);
+      --crimson-border: rgba(224,90,90,0.3);
+      --teal-mid: rgba(43,191,191,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    header {
+      background: var(--bg-mid);
+      border-bottom: 1px solid var(--rule);
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .header-text { flex: 1; min-width: 200px; }
+
+    .header-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--crimson); margin-bottom: 6px;
+    }
+
+    .header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+      line-height: 1.0; color: var(--text-primary); letter-spacing: -0.01em;
+    }
+
+    .header-title span { color: var(--teal); }
+
+    .header-sub {
+      font-size: 13px; color: var(--text-secondary);
+      margin-top: 6px; font-weight: 500; letter-spacing: 0.04em;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative; padding: 80px 32px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-deep);
+    }
+
+    .hero-overlay {
+      display: none;
+    }
+
+    .hero-dots {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(43,191,191,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 0 32px;
+    }
+
+    .hero-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 12px;
+    }
+
+    .hero-headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(36px, 6vw, 68px); font-weight: 800;
+      color: #fff; line-height: 1.0; letter-spacing: -0.01em;
+    }
+
+    .hero-headline span { color: rgba(43,191,191,0.9); }
+
+    .hero-desc {
+      margin-top: 16px; font-size: 15px;
+      color: rgba(255,255,255,0.78); max-width: 580px;
+      margin-left: auto; margin-right: auto; line-height: 1.65;
+    }
+
+    /* PIPELINE BANNER */
+    .pipeline-banner {
+      background: var(--bg-mid);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 16px 48px;
+      overflow-x: auto;
+    }
+
+    .pipeline-steps {
+      display: flex; align-items: center; gap: 0;
+      min-width: max-content; margin: 0 auto; max-width: 1100px;
+    }
+
+    .pipeline-step { display: flex; align-items: center; gap: 0; }
+
+    .pipeline-node { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+
+    .pipeline-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px; font-weight: 700;
+      color: rgba(255,255,255,0.5); letter-spacing: 0.12em;
+    }
+
+    .pipeline-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #fff; white-space: nowrap;
+      padding: 5px 14px; border: 1px solid rgba(43,191,191,0.45);
+      border-radius: 2px; background: rgba(43,191,191,0.14);
+    }
+
+    .pipeline-arrow {
+      width: 28px; height: 1px;
+      background: rgba(43,191,191,0.45); position: relative; flex-shrink: 0;
+    }
+
+    .pipeline-arrow::after {
+      content: ''; position: absolute; right: -1px; top: -4px;
+      border-left: 6px solid rgba(43,191,191,0.55);
+      border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+    }
+
+    /* LAYOUT */
+    .page-body {
+      max-width: 1200px; margin: 0 auto; padding: 64px 48px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .page-body { grid-template-columns: 1fr; padding: 40px 24px; }
+    }
+
+    .col-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--crimson); margin-bottom: 8px;
+    }
+
+    .col-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 30px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 32px; line-height: 1.1;
+      border-bottom: 1px solid var(--rule); padding-bottom: 16px;
+    }
+
+    .role-card {
+      background: var(--bg-card);
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--teal-border);
+      border-radius: 4px; padding: 18px 20px; margin-bottom: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .role-card:hover {
+      border-left-color: var(--teal);
+      box-shadow: 0 4px 18px rgba(43,191,191,0.08);
+    }
+
+    .role-card:last-child { margin-bottom: 0; }
+
+    .role-card.crimson-accent { border-left-color: rgba(224,90,90,0.5); }
+    .role-card.crimson-accent .role-number { color: var(--crimson); }
+
+    .role-number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 4px;
+    }
+
+    .role-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 19px; font-weight: 700; color: var(--text-primary);
+      margin-bottom: 7px; line-height: 1.1;
+    }
+
+    .role-desc {
+      font-size: 13.5px; color: var(--text-secondary); line-height: 1.68;
+    }
+
+    .role-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+    .role-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 2px;
+      background: var(--teal-mid); border: 1px solid var(--teal-border);
+      color: var(--teal);
+    }
+
+    .role-tag.crimson {
+      background: var(--crimson-mid); border-color: var(--crimson-border); color: var(--crimson);
+    }
+
+    .diagram-wrap { position: sticky; top: 32px; }
+
+    .diagram-svg-wrap {
+      background: var(--bg-card); border: 1px solid var(--rule);
+      border-radius: 6px; padding: 28px 20px; margin-top: 56px; overflow: hidden;
+    }
+
+    svg.chain-diagram { width: 100%; height: auto; display: block; }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      background: var(--bg-mid); padding: 24px 48px;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+
+    .footer-left { display: flex; align-items: center; gap: 10px; }
+
+    .footer-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--coral); flex-shrink: 0;
+    }
+
+    .footer-status {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+
+    .footer-right { font-size: 12px; color: var(--text-muted); }
+
+    nav { background: var(--bg-mid); border-bottom: 1px solid var(--rule); padding: 0 48px; display: flex; align-items: center; gap: 32px; height: 48px; }
+    .nav-brand { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; margin-left: auto; }
+    .nav-links a { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-links a.active { color: var(--teal); }
+
+    @media (max-width: 640px) {
+      nav, header, footer { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">Rapid Response Supply Chain</a>
+  <div class="nav-links">
+    <a href="bioscitech.html">BioSciTech WG</a>
+    <a href="supply_chain.html" class="active">Supply Chain WG</a>
+  </div>
+</nav>
+
+<header>
+  <div class="header-text">
+    <div class="header-eyebrow">Working Group</div>
+    <div class="header-title">Supply <span>Chain</span></div>
+    <div class="header-sub">Azania Trade &mdash; Supply Chain Operations Division</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-label">Supply Chain Working Group</div>
+    <div class="hero-headline">Innovate.<br><span>Adapt.</span><br>Deliver.</div>
+    <p class="hero-desc">
+      An innovation-driven network of supply chain specialists designing
+      new approaches to rapid development, disaster preparedness, and
+      resilient delivery of bioscience products across the African
+      continent.
+    </p>
+  </div>
+</div>
+
+<div class="pipeline-banner">
+  <div class="pipeline-steps">
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">01</span>
+        <span class="pipeline-label">Procurement</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">02</span>
+        <span class="pipeline-label">Production</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">03</span>
+        <span class="pipeline-label">Fill &amp; Finish</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">04</span>
+        <span class="pipeline-label">Packaging</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">05</span>
+        <span class="pipeline-label">Storage</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">06</span>
+        <span class="pipeline-label">Distribution</span>
+      </div>
+    </div>
+    <div class="pipeline-arrow"></div>
+    <div class="pipeline-step">
+      <div class="pipeline-node">
+        <span class="pipeline-num">07</span>
+        <span class="pipeline-label">Point of Care</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+
+  <div class="roles-col">
+    <div class="col-label">Team Composition</div>
+    <div class="col-title">Working Group Roles</div>
+
+    <div class="role-card">
+      <div class="role-number">Role 01</div>
+      <div class="role-title">Procurement &amp; Supplier Relations Manager</div>
+      <p class="role-desc">
+        Designs adaptive sourcing strategies that allow the network to
+        rapidly qualify and onboard new suppliers under disaster-response
+        conditions. Builds contingency supplier pools and accelerated
+        vetting frameworks so that input availability can scale within
+        compressed emergency timelines.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Adaptive Sourcing</span>
+        <span class="role-tag">Contingency Planning</span>
+        <span class="role-tag">Rapid Vetting</span>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-number">Role 02</div>
+      <div class="role-title">Production Operations Manager</div>
+      <p class="role-desc">
+        Develops modular manufacturing approaches capable of scaling output
+        rapidly during periods of surge demand. Designs flexible production
+        configurations and accelerated changeover processes that allow
+        the network to pivot quickly between standard and emergency
+        production modes.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Modular Manufacturing</span>
+        <span class="role-tag">Surge Capacity</span>
+        <span class="role-tag">Rapid Changeover</span>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-number">Role 03</div>
+      <div class="role-title">Fill &amp; Finish Operations Specialist</div>
+      <p class="role-desc">
+        Innovates aseptic filling approaches optimized for rapid deployment,
+        including portable and modular fill-line configurations suited to
+        emergency response settings. Designs streamlined finishing protocols
+        that preserve product integrity while compressing standard
+        processing timelines.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Modular Fill Lines</span>
+        <span class="role-tag">Emergency Deployment</span>
+        <span class="role-tag">Process Innovation</span>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-number">Role 04</div>
+      <div class="role-title">Packaging &amp; Labelling Coordinator</div>
+      <p class="role-desc">
+        Designs rapid-deployment packaging formats and simplified labelling
+        systems that remain regulatory-compliant under accelerated
+        production conditions. Develops pre-approved packaging templates
+        that can be activated quickly during disaster response without
+        compromising traceability standards.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Rapid-Deploy Packaging</span>
+        <span class="role-tag">Pre-Approved Templates</span>
+        <span class="role-tag">Traceability</span>
+      </div>
+    </div>
+
+    <div class="role-card crimson-accent">
+      <div class="role-number">Role 05</div>
+      <div class="role-title">Cold Chain &amp; Storage Manager</div>
+      <p class="role-desc">
+        Designs resilient, redundant storage networks capable of maintaining
+        product integrity when primary infrastructure is disrupted.
+        Develops mobile and decentralized cold chain solutions tailored to
+        disaster-affected regions, ensuring continuity of storage capacity
+        under crisis conditions.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag crimson">Resilient Cold Chain</span>
+        <span class="role-tag crimson">Decentralized Storage</span>
+        <span class="role-tag crimson">Redundancy Design</span>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-number">Role 06</div>
+      <div class="role-title">Distribution &amp; Logistics Coordinator</div>
+      <p class="role-desc">
+        Develops agile routing models and alternative transport corridors
+        capable of adapting to disrupted infrastructure during emergencies.
+        Designs last-mile delivery innovations for hard-to-reach or
+        disaster-affected areas, ensuring continuity of distribution under
+        unpredictable field conditions.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Agile Routing</span>
+        <span class="role-tag">Disaster Logistics</span>
+        <span class="role-tag">Last-Mile Innovation</span>
+      </div>
+    </div>
+
+    <div class="role-card">
+      <div class="role-number">Role 07</div>
+      <div class="role-title">Facilities &amp; Point-of-Care Integration Lead</div>
+      <p class="role-desc">
+        Designs rapid-activation protocols that prepare clinical facilities
+        and dispensing sites to receive emergency shipments with minimal
+        lead time. Develops field-deployable infrastructure standards and
+        real-time reporting mechanisms that feed directly into the
+        association&rsquo;s disaster-response intelligence system.
+      </p>
+      <div class="role-tags">
+        <span class="role-tag">Rapid Activation</span>
+        <span class="role-tag">Field Infrastructure</span>
+        <span class="role-tag">Real-Time Reporting</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="diagram-col">
+    <div class="diagram-wrap">
+      <div class="col-label">Working Group Structure</div>
+      <div class="col-title">Supply Chain Diagram</div>
+      <div class="diagram-svg-wrap">
+        <svg class="chain-diagram" viewBox="0 0 340 760" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead" markerWidth="8" markerHeight="6"
+              refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="rgba(43,191,191,0.55)"/>
+            </marker>
+          </defs>
+
+          <g opacity="0.06">
+            <circle cx="40" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="80" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="120" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="160" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="200" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="240" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="280" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="300" cy="40" r="2.5" fill="#e05a5a"/>
+            <circle cx="40" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="80" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="120" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="160" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="200" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="240" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="280" cy="720" r="2.5" fill="#e05a5a"/>
+            <circle cx="300" cy="720" r="2.5" fill="#e05a5a"/>
+          </g>
+
+          <line x1="170" y1="78" x2="170" y2="682"
+            stroke="rgba(43,191,191,0.3)" stroke-width="1.5"/>
+
+          <line x1="170" y1="114" x2="170" y2="182"
+            stroke="rgba(43,191,191,0.55)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="218" x2="170" y2="282"
+            stroke="rgba(43,191,191,0.55)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="318" x2="170" y2="382"
+            stroke="rgba(43,191,191,0.55)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="418" x2="170" y2="482"
+            stroke="rgba(224,90,90,0.5)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="518" x2="170" y2="582"
+            stroke="rgba(43,191,191,0.55)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="618" x2="170" y2="682"
+            stroke="rgba(43,191,191,0.55)" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <rect x="60" y="66" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="66" width="8" height="48" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="90" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="94" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">01</text>
+          <text x="80" y="86" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Procurement &amp;</text>
+          <text x="80" y="100" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Supplier Relations Mgr</text>
+
+          <rect x="60" y="166" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="166" width="8" height="48" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="190" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="194" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">02</text>
+          <text x="80" y="186" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Production</text>
+          <text x="80" y="200" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Operations Manager</text>
+
+          <rect x="60" y="266" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="266" width="8" height="48" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="290" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="294" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">03</text>
+          <text x="80" y="286" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Fill &amp; Finish</text>
+          <text x="80" y="300" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Operations Specialist</text>
+
+          <rect x="60" y="366" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="366" width="8" height="48" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="390" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="394" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">04</text>
+          <text x="80" y="386" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Packaging &amp; Labelling</text>
+          <text x="80" y="400" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Coordinator</text>
+
+          <rect x="60" y="466" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(224,90,90,0.5)" stroke-width="1.5"/>
+          <rect x="60" y="466" width="8" height="48" fill="rgba(224,90,90,0.5)"/>
+          <circle cx="60" cy="490" r="13" fill="rgba(224,90,90,0.85)"/>
+          <text x="60" y="494" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">05</text>
+          <text x="80" y="486" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e05a5a" letter-spacing="0.3">Cold Chain &amp;</text>
+          <text x="80" y="500" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e05a5a" letter-spacing="0.3">Storage Manager</text>
+
+          <rect x="60" y="566" width="220" height="48" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="566" width="8" height="48" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="590" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="594" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">06</text>
+          <text x="80" y="586" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Distribution &amp; Logistics</text>
+          <text x="80" y="600" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Coordinator</text>
+
+          <rect x="60" y="666" width="220" height="52" rx="4"
+            fill="#1a3045" stroke="rgba(43,191,191,0.45)" stroke-width="1.5"/>
+          <rect x="60" y="666" width="8" height="52" fill="rgba(43,191,191,0.45)"/>
+          <circle cx="60" cy="692" r="13" fill="rgba(43,191,191,0.85)"/>
+          <text x="60" y="696" text-anchor="middle"
+            font-family="Barlow Condensed, sans-serif" font-size="9" font-weight="800" fill="#fff">07</text>
+          <text x="80" y="683" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Facilities &amp; Point-of-Care</text>
+          <text x="80" y="695" font-family="Barlow Condensed, sans-serif"
+            font-size="11" font-weight="700" fill="#e8f0f5" letter-spacing="0.3">Integration Lead</text>
+          <text x="80" y="707" font-family="Barlow Condensed, sans-serif"
+            font-size="10" font-weight="600" fill="rgba(43,191,191,0.55)" letter-spacing="0.3">Point of Care</text>
+        </svg>
+      </div>
+
+      <div style="margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="display:flex; align-items:center; gap:7px;">
+          <div style="width:12px;height:12px;border-radius:2px;border:2px solid rgba(43,191,191,0.5);background:#1a3045;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:#8fafc4;font-weight:500;">Operational Roles</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:7px;">
+          <div style="width:12px;height:12px;border-radius:2px;border:2px solid rgba(224,90,90,0.5);background:#1a3045;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:#8fafc4;font-weight:500;">Cold Chain Role</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:7px;">
+          <div style="width:16px;height:2px;background:rgba(43,191,191,0.55);flex-shrink:0;margin-top:1px;"></div>
+          <span style="font-size:11px;color:#8fafc4;font-weight:500;">Chain Flow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-left">
+    <div class="footer-dot"></div>
+    <span class="footer-status">Draft &mdash; Pending Review</span>
+  </div>
+  <div class="footer-right">
+    Supply Chain Working Group &mdash; Drafted by Stephanie Hervey, Formatted by Claude AI
+  </div>
+</footer>
+
+</body>
+</html>
